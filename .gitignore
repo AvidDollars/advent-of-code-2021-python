@@ -1,0 +1,7 @@
+*.pyc
+__pycache__
+playground.py
+
+# everything starting with dot except .gitignore
+.*
+!.gitignore
