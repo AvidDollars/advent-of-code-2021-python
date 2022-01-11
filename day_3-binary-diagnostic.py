@@ -1,61 +1,56 @@
 from functools import partial
-from collections import deque
 
 data_file = "files/day-3.txt"
 
-# binary number string → int of base 10
 to_decimal_number = partial(int, base=2)
 
 
-def initialize_keys_from_range(max_index: int) -> dict:
+def initialize_counter(max_index: int) -> dict:
     return dict.fromkeys(range(max_index), 0)
 
 
-# returns false if 0 is set and true if 1 is set for a given position at binary number string
-def is_nth_bit_set(bin_number: str, index: int) -> bool:
-    number = to_decimal_number(bin_number)
-    return bool((2 ** index) & number)
+def clean_row(row: str) -> str:
+    return row.strip("\n")
 
 
-def update_counter(counter: dict, bin_number: str, max_index: int) -> None:
-    for index in range(max_index):
-        # given_position += 1 or 0
-        counter[index] += is_nth_bit_set(bin_number, index)
+def update_counter(counter: dict, binary_number: str) -> None:
+    for index, digit in enumerate(binary_number):
+        if binary_number[index] == "1":
+            counter[index] += 1
 
 
-def get_gamma_rate(counter: dict, count: int, max_index: int) -> int:
-    final_bin_digits = deque()
+def get_gamma_rate(counter: dict, rows_count: int) -> int:
+    digits = []
 
-    for index in range(max_index):
-        digit = counter.get(index)
-        half_count_of_iterations = count / 2
-        digit = 1 if digit > half_count_of_iterations else 0
-        final_bin_digits.appendleft(digit)
+    for index in range(digits_count):
+        count_for_one = counter.get(index)
+        digit = 0 if count_for_one < rows_count / 2 else 1
+        digits.append(digit)
 
-    binary_string = "".join(str(num) for num in final_bin_digits)
+    binary_string = "".join(str(num) for num in digits)
+    print(binary_string)
     return to_decimal_number(binary_string)
 
 
 with open(data_file) as data:
-    first_number = next(data).strip("\n")
+    # PART ONE
+    rows_count = 0
+    row = clean_row(next(data))
+    digits_count = len(row)
 
-    # max value which can be represented by binary number in the file
-    # e.g.: 1111 → 15, 11111111 → 255
-    max_num = 2 ** len(first_number) - 1
-    max_index = len(first_number)
-    counter = initialize_keys_from_range(max_index)
-    iterations_count = 0
+    # initializing counter for count of 1 in binary number for each index
+    counter = initialize_counter(digits_count)
 
-    # returning cursor back to its initial position
+    # resetting cursor to its initial position
     data.seek(0)
 
-    for number in data:
-        number = number.strip("\n")
-        update_counter(counter, number, max_index)
-        iterations_count += 1
+    for row in data:
+        row = clean_row(row)
+        update_counter(counter, row)
+        rows_count += 1
 
-
-gamma_rate = get_gamma_rate(counter, iterations_count, max_index)
-epsilon_rate = max_num - gamma_rate
-power_consumption = epsilon_rate * gamma_rate
-print(power_consumption)
+    max_number = 2 ** digits_count - 1
+    gamma_rate = get_gamma_rate(counter, rows_count)
+    epsilon_rate = max_number - gamma_rate
+    power_consumption = gamma_rate * epsilon_rate
+    print(power_consumption)
