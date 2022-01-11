@@ -1,4 +1,5 @@
 from functools import partial
+from collections import deque
 
 data_file = "files/day-3.txt"
 
@@ -23,15 +24,16 @@ def update_counter(counter: dict, bin_number: str, max_index: int) -> None:
 
 
 def get_gamma_rate(counter: dict, count: int, max_index: int) -> int:
-    final_bin_digits = ""
+    final_bin_digits = deque()
 
     for index in range(max_index):
         digit = counter.get(index)
         half_count_of_iterations = count / 2
-        final_bin_digits += str(1) if digit > half_count_of_iterations else str(0)
+        digit = 1 if digit > half_count_of_iterations else 0
+        final_bin_digits.appendleft(digit)
 
-    # binary number string needs to be reversed in order to obtain right gamma rate
-    return to_decimal_number(final_bin_digits[::-1])
+    binary_string = "".join(str(num) for num in final_bin_digits)
+    return to_decimal_number(binary_string)
 
 
 with open(data_file) as data:
