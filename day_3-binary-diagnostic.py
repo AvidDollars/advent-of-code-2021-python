@@ -16,7 +16,7 @@ def clean_row(row: str) -> str:
 
 def update_counter(counter: dict, binary_number: str, *, operation=add) -> None:
     for index, digit in enumerate(binary_number):
-        if binary_number[index] == "1":
+        if digit == "1":
             counter[index] = operation(counter[index], 1)
 
 
