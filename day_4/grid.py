@@ -7,6 +7,7 @@ class Grid:
         self._matrix = matrix
         self._index = {}
         self._index_matrix()
+        self.solved = False
 
     def mark_number(self, number: int) -> bool:
         """
@@ -37,14 +38,19 @@ class Grid:
                 self._index[number] = position(row_idx, col_idx)
 
     def _check_if_bingo(self) -> bool:
+        if self.solved:
+            return True
+
         # checking rows
         for row in self._matrix:
             if self.all_positions_are_checked(row):
+                self.solved = True
                 return True
 
         # 90 degrees rotation → for checking columns
         for row in list(list(x)[::-1] for x in zip(*self._matrix)):
             if self.all_positions_are_checked(row):
+                self.solved = True
                 return True
 
         # not a Bingo :(

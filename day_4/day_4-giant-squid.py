@@ -52,3 +52,26 @@ def play_bingo(numbers, grids):
 numbers_list, grids = extract_numbers_and_grids(file_path)
 result = play_bingo(numbers_list, grids)
 print(result)
+
+
+# PART TWO
+def last_winning_grid(numbers, grids):
+    grids_count = len(grids)
+    winning_grids = 0
+
+    for number in numbers:
+        for grid in grids:
+
+            if not grid.solved:
+
+                is_bingo = grid.mark_number(number)
+                winning_grids += is_bingo
+
+                # last unsolved grid
+                if winning_grids == grids_count:
+                    return number * grid.sum_unmarked_numbers()
+
+
+numbers_list, grids = extract_numbers_and_grids(file_path)
+result = last_winning_grid(numbers_list, grids)
+print(result)
